@@ -58,6 +58,14 @@ t("글자 수는 공백을 뺀다 / 학번은 5자리 숫자", () => {
   for (const bad of ["3051", "305123", "abcde", "", null]) assert.ok(!L.isValidSid(bad));
 });
 
+t("Padlet 링크: 3학년 5~8반만, 학번에서 반을 읽는다", () => {
+  const map = { 5: "u5", 6: "u6", 7: "u7", 8: "u8" };
+  assert.equal(L.padletUrlFor("30512", map), "u5");
+  assert.equal(L.padletUrlFor("30801", map), "u8");
+  for (const s of ["30412", "30912", "20512", "10512", "3051", "abcde", "", null]) assert.equal(L.padletUrlFor(s, map), "", String(s));
+  assert.equal(L.padletUrlFor("30512", null), "");
+});
+
 t("payload: 스키마 그대로, choicesJson은 문자열", () => {
   const answers = answersWith([true, true, false, false, false]);
   const p = L.buildPayload({ sid: " 30512 ", name: "효니", gameName: "G", answers, focusName: "조광조의 개혁", focusStage: 2, dirId: "other", reflection: "본문" });

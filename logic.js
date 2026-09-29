@@ -61,6 +61,13 @@
   function isValidSid(sid) { return /^\d{5}$/.test(String(sid || "").trim()); }
 
   // choiceText는 학생이 그 장면에서 고른 선택지 문장. 채점 때 선택과 이유가 맞는지 볼 수 있게 함께 적는다.
+  // 학번(학년1+반2+번호2)에서 자기 반 Padlet 링크를 찾는다. 3학년이 아니거나 목록에 없는 반이면 "".
+  function padletUrlFor(sid, byBan) {
+    var s = String(sid || "").trim();
+    if (!/^\d{5}$/.test(s) || s.charAt(0) !== "3") return "";
+    return (byBan && byBan[Number(s.slice(1, 3))]) || "";
+  }
+
   function buildReflection(focusName, labels, texts, choiceText) {
     var lines = ["[가장 고민한 장면] " + focusName];
     if (choiceText) lines.push("[내가 고른 선택] " + choiceText);
@@ -114,7 +121,7 @@
   var api = {
     STAGE_COUNT: STAGE_COUNT, TYPES: TYPES,
     countHard: countHard, classify: classify, displayOrders: displayOrders,
-    patternLine: patternLine, charCount: charCount, isValidSid: isValidSid,
+    patternLine: patternLine, charCount: charCount, isValidSid: isValidSid, padletUrlFor: padletUrlFor,
     buildReflection: buildReflection, buildPayload: buildPayload, buildCopyText: buildCopyText
   };
 

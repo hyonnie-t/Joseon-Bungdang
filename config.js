@@ -10,6 +10,15 @@ const CONFIG = {
   // '분량 부족 = 1점'이라 최소선을 둔다. 바꾸려면 여기만 고친다.
   MIN_CHARS: 20,
 
+  // 3학년 반별 Padlet(웹앱 글쓰기 제출용). 학번의 학년·반으로 자기 반 링크만 보여 준다.
+  // 링크가 바뀌면 여기만 고친다(포털 config.js의 urlByBan과 같은 값).
+  PADLET_URL_BY_BAN: {
+    5: "https://padlet.com/dy_sch03/2026-2-3-5-cewq8vec8p3ew2yn",
+    6: "https://padlet.com/dy_sch03/2026-2-3-6-2xngg3v8pstkvld9",
+    7: "https://padlet.com/dy_sch03/2026-2-3-7-8ssvnriy75f7xwxs",
+    8: "https://padlet.com/dy_sch03/2026-2-3-8-gsrz2i3ca863675l"
+  },
+
   // ?preview=1일 때 sid/name이 없으면 채울 값
   PREVIEW_SID: "30500",
   PREVIEW_NAME: "미리보기"
