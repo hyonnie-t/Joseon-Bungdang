@@ -195,3 +195,8 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
   .stage-title { font-size: 1.2rem; }
   .card { padding: 18px 14px; }
 }
+
+/* 글쓰기: 접이식 사실 근거, ② 잠금 안내 */
+.fact { margin-top: 10px; }
+.fact summary { font-weight: 700; cursor: pointer; min-height: var(--tap); display: flex; align-items: center; }
+.lock-note { text-align: left; color: var(--muted); background: #faf7ef; border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; margin: 14px 0; }

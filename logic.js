@@ -60,8 +60,11 @@
 
   function isValidSid(sid) { return /^\d{5}$/.test(String(sid || "").trim()); }
 
-  function buildReflection(focusName, labels, texts) {
-    var lines = ["[가장 고민한 장면] " + focusName, ""];
+  // choiceText는 학생이 그 장면에서 고른 선택지 문장. 채점 때 선택과 이유가 맞는지 볼 수 있게 함께 적는다.
+  function buildReflection(focusName, labels, texts, choiceText) {
+    var lines = ["[가장 고민한 장면] " + focusName];
+    if (choiceText) lines.push("[내가 고른 선택] " + choiceText);
+    lines.push("");
     for (var i = 0; i < labels.length; i++) {
       lines.push(labels[i]);
       lines.push(String(texts[i] || "").trim());
