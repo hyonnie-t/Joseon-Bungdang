@@ -170,10 +170,13 @@ function renderStage() {
     afterHtml +
     '<div class="tools"><button type="button" class="link-btn" id="magBtn">🔍 자료 돋보기: 당시 맥락 더 보기</button></div>';
 
-  const card = $("stageCard");
-  card.style.animation = "none";
-  void card.offsetWidth;
-  card.style.animation = "";
+  // 새 장면이 열릴 때만 페이드인. 선택 직후(결과 카드가 붙는 다시 그리기)에는 깜빡이지 않게 한다.
+  if (state.phase === "choose") {
+    const card = $("stageCard");
+    card.style.animation = "none";
+    void card.offsetWidth;
+    card.style.animation = "";
+  }
 }
 
 function pickChoice(dataIdx) {

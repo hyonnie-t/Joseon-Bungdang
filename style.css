@@ -109,7 +109,7 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .scene-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
 #introImg .scene-img { max-width: 520px; margin: 0 auto 14px; }
 
-.term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; border-bottom: 2px dashed var(--seal); padding: 0; cursor: pointer; }
+.term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; text-decoration: underline dashed var(--seal); text-decoration-thickness: 2px; text-underline-offset: 4px; padding: 9px 2px; margin: -9px 0; cursor: pointer; }  /* 밑줄은 글자에 붙이고, 본문 줄 높이는 그대로 둔 채 터치 영역만 44px 이상으로 */
 
 .choices { display: grid; gap: 12px; margin-bottom: 14px; }
 .choice {
