@@ -40,8 +40,7 @@ function withTerms(text) {
 // 삽화 자리. 파일이 없으면 error 리스너(init)가 이 자리를 지운다.
 function imgHtml(img) {
   if (!img || !img.src) return "";
-  return '<figure class="scene-img"><img src="' + esc(img.src) + '" alt="' + esc(img.alt) + '" loading="lazy">' +
-    "<figcaption>상상해서 그린 그림이야. 실제 기록이 아니야.</figcaption></figure>";
+  return '<figure class="scene-img"><img src="' + esc(img.src) + '" alt="' + esc(img.alt) + '" loading="lazy"></figure>';
 }
 
 function onImgError(ev) {

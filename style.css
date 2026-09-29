@@ -104,10 +104,9 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .speaker-role { color: var(--muted); font-size: 0.875rem; margin-left: 6px; }
 .speaker p { margin: 2px 0 0; }
 
-/* 삽화: 상상해서 그린 그림. 파일이 없으면 app.js가 figure를 지운다. */
+/* 삽화(창작 그림). 파일이 없으면 app.js가 figure를 지운다. 창작 안내는 시작 화면에 한 번만 둔다. */
 .scene-img { margin: 0 0 14px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #efe9da; }
-.scene-img img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
-.scene-img figcaption { font-size: 0.8125rem; color: var(--muted); padding: 4px 10px; text-align: right; }
+.scene-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
 #introImg .scene-img { max-width: 520px; margin: 0 auto 14px; }
 
 .term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; border-bottom: 2px dashed var(--seal); padding: 0; cursor: pointer; }
