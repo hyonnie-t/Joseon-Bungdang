@@ -171,6 +171,7 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .counter.ok { color: var(--jade); font-weight: 700; }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
 .actions .btn { flex: 1 1 200px; }
+a.btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; text-align: center; }
 .status { margin-top: 10px; font-weight: 700; }
 .status.ok { color: var(--jade); }
 .status.bad { color: var(--seal); }

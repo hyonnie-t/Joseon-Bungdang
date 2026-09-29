@@ -13,6 +13,14 @@ const read = (f) => readFileSync(join(root, f), "utf8");
 const EXPECTED_URL =
   "https://script.google.com/macros/s/AKfycbyXSjCfWY_HiZFqW_OBR-FQDoIfF1z_STqyKWUI31MacHeY3u7hbirFSFDvW-5yuUHaJQ/exec";
 
+// 원본: webapp-builder 스킬에 적힌 3학년 반별 Padlet 링크
+const EXPECTED_PADLET = {
+  5: "https://padlet.com/dy_sch03/2026-2-3-5-cewq8vec8p3ew2yn",
+  6: "https://padlet.com/dy_sch03/2026-2-3-6-2xngg3v8pstkvld9",
+  7: "https://padlet.com/dy_sch03/2026-2-3-7-8ssvnriy75f7xwxs",
+  8: "https://padlet.com/dy_sch03/2026-2-3-8-gsrz2i3ca863675l"
+};
+
 const problems = [];
 const fail = (m) => problems.push(m);
 
@@ -41,6 +49,11 @@ const cfg = read("config.js");
 const m = cfg.match(/SHEET_WEBAPP_URL:\s*"([^"]+)"/);
 if (!m) fail("config.js: SHEET_WEBAPP_URL 없음");
 else if (m[1] !== EXPECTED_URL) fail("config.js: SHEET_WEBAPP_URL이 원본과 다름");
+for (const [ban, url] of Object.entries(EXPECTED_PADLET)) {
+  const pm = cfg.match(new RegExp(ban + ':\\s*"([^"]+)"'));
+  if (!pm) fail(`config.js: ${ban}반 Padlet 링크 없음`);
+  else if (pm[1] !== url) fail(`config.js: ${ban}반 Padlet 링크가 원본과 다름`);
+}
 if (!/GAME_NAME:\s*"[^"]+"/.test(cfg)) fail("config.js: GAME_NAME 없음");
 
 // TDZ 방지: init()은 app.js 맨 마지막 실행문

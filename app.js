@@ -330,6 +330,15 @@ function writeItemHtml(i) {
     '<div class="counter" id="count' + i + '"></div></div>';
 }
 
+// 우리 반 Padlet 링크(3학년 5~8반). 학번에서 반을 읽고, 목록에 없으면 버튼을 보이지 않는다.
+function padletUrl() { return L.padletUrlFor(state.sid, CONFIG.PADLET_URL_BY_BAN); }
+
+function padletLinkHtml() {
+  const url = padletUrl();
+  if (!url) return "";
+  return '<a class="btn" id="padletLink" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">🔗 우리 반 Padlet 열기</a>';
+}
+
 function renderWriting(noScroll) {
   setProgress(false);
   const chips = state.answers.map(function (a) {
@@ -350,6 +359,7 @@ function renderWriting(noScroll) {
       '<div id="dirArea"' + (state.unlocked ? "" : " hidden") + '><p class="dir-q">' + esc(WRITING.dirsTitle) + '</p>' +
       '<div class="pick-chips">' + dirChips + '</div><div id="extraArea">' + extra + "</div></div>" +
       '<div class="actions"><button type="button" class="btn dark" id="copyBtn">📋 전체 제출문 복사하기</button>' +
+      padletLinkHtml() +
       '<button type="button" class="btn primary" id="saveBtn">💾 기록 저장하기</button>' +
       '<button type="button" class="btn" id="restartBtn">처음부터 다시 하기</button></div>' +
       '<p class="status" id="status" role="status"></p>';
@@ -453,7 +463,7 @@ function onCopy() {
   if (!requireReady()) return;
   const text = L.buildCopyText({ sid: state.sid, name: state.name, answers: state.answers, reflection: currentReflection() });
   copyText(text).then(function () {
-    setStatus("복사됐어! 우리 반 Padlet에 붙여 넣어 줘.", "ok");
+    setStatus(padletUrl() ? "복사됐어! 옆의 Padlet 버튼을 눌러 붙여 넣어 줘." : "복사됐어! 우리 반 Padlet에 붙여 넣어 줘.", "ok");
     toast("제출문을 복사했어.");
   }).catch(function () {
     setStatus("복사하지 못했어. 글을 직접 선택해서 복사해 줘.", "bad");
