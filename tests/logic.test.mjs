@@ -91,7 +91,6 @@ t("data: {용어} 표기가 모두 용어 사전에 있다", () => {
   for (const txt of texts) {
     for (const m of txt.matchAll(/\{([^}]+)\}/g)) assert.ok(GLOSSARY[m[1]], "사전에 없는 용어: " + m[1]);
   }
-  for (const s of STAGES) for (const k of s.terms) assert.ok(GLOSSARY[k], "사전에 없는 용어: " + k);
 });
 
 console.log("\n" + passed + "개 통과");

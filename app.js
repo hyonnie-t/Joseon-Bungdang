@@ -35,6 +35,21 @@ function withTerms(text) {
   });
 }
 
+// 삽화 자리. 파일이 없으면 error 리스너(init)가 이 자리를 지운다.
+function imgHtml(img) {
+  if (!img || !img.src) return "";
+  return '<figure class="scene-img"><img src="' + esc(img.src) + '" alt="' + esc(img.alt) + '" loading="lazy">' +
+    "<figcaption>상상해서 그린 그림이야. 실제 기록이 아니야.</figcaption></figure>";
+}
+
+function onImgError(ev) {
+  const el = ev.target;
+  if (el && el.tagName === "IMG") {
+    const fig = el.closest("figure");
+    if (fig) fig.remove();
+  }
+}
+
 function show(id) {
   ["screenIntro", "screenSim", "screenSummary", "screenWriting"].forEach(function (s) {
     $(s).hidden = (s !== id);
@@ -121,10 +136,6 @@ function renderStage() {
 
   $("bridgeSlot").innerHTML = (state.idx > 0 && state.phase === "choose") ? bridgeHtml(state.idx) : "";
 
-  const termLines = st.terms.map(function (k) {
-    return "<p>💡 <b>" + esc(k) + "</b> · " + esc(GLOSSARY[k]) + "</p>";
-  }).join("");
-
   const choicesHtml = order.map(function (dataIdx, pos) {
     const c = st.choices[dataIdx];
     const picked = answered && answered.choiceId === c.id;
@@ -149,12 +160,12 @@ function renderStage() {
 
   $("stageCard").innerHTML =
     '<div class="stage-head"><span class="badge">' + st.n + "단계</span><span class=\"year\">" + esc(st.year) + "</span></div>" +
+    imgHtml(st.img) +
     '<h3 class="stage-title">' + esc(st.title) + "</h3>" +
     '<p class="role">🎭 네 자리 · ' + esc(st.role) + "</p>" +
     '<div class="speaker ' + st.speaker.cls + '"><div class="avatar" aria-hidden="true">' + esc(st.speaker.avatar) + "</div>" +
     '<div><span class="speaker-name">' + esc(st.speaker.name) + '</span><span class="speaker-role">' + esc(st.speaker.role) + "</span>" +
     "<p>" + withTerms(st.scene) + "</p></div></div>" +
-    (termLines ? '<div class="toast-terms">' + termLines + "</div>" : "") +
     '<div class="choices">' + choicesHtml + "</div>" +
     afterHtml +
     '<div class="tools"><button type="button" class="link-btn" id="magBtn">🔍 자료 돋보기: 당시 맥락 더 보기</button></div>';
@@ -251,7 +262,7 @@ function historyCardHtml() {
   const sides = st.choices.map(function (c) {
     const isMine = mine && mine.choiceId === c.id;
     return '<div class="side' + (isMine ? " mine" : "") + '"><div class="s-stand">' + esc(c.stand) + (isMine ? " ← 내가 선 자리" : "") + "</div>" +
-      "<div>" + esc(c.text) + "</div><div class=\"res-note\">" + esc(c.sub) + "</div></div>";
+      '<div class="res-note">' + esc(c.sub) + "</div></div>";
   }).join("");
   return '<div class="box"><h4>역사 속 그 자리 · ' + esc(st.name) + "</h4><p>" + withTerms(st.result) + "</p>" +
     (st.resultNote ? '<p class="res-note">' + esc(st.resultNote) + "</p>" : "") +
@@ -284,13 +295,11 @@ function renderWriting() {
       '<div class="actions"><button type="button" class="btn dark" id="copyBtn">📋 전체 제출문 복사하기</button>' +
       '<button type="button" class="btn primary" id="saveBtn">💾 기록 저장하기</button>' +
       '<button type="button" class="btn" id="restartBtn">처음부터 다시 하기</button></div>' +
-      '<p class="status" id="status" role="status"></p>' +
-      '<p class="paste-guide">복사한 글은 우리 반 Padlet에 붙여 넣어 제출해. 기록 저장은 이 웹앱의 활동 기록으로 남아.</p>';
+      '<p class="status" id="status" role="status"></p>';
   }
 
   $("screenWriting").innerHTML =
-    '<span class="badge">글쓰기</span><h2 class="serif" style="margin:8px 0 4px">가장 고민한 장면 하나를 골라 줘</h2>' +
-    '<p class="lead" style="margin-left:0">다섯 장면 중 가장 고민한 분기를 고르면, 그 장면의 역사 속 자리 카드가 나와. 먼저 네 생각을 쓰고, 그다음 카드와 비교해 봐.</p>' +
+    '<h2 class="serif" style="margin:0 0 4px">가장 고민한 장면을 하나 골라 줘</h2>' +
     '<div class="pick-chips">' + chips + "</div>" + body;
   show("screenWriting");
   if (state.focusStage) { for (let i = 0; i < WRITING.length; i++) updateCounter(i); }
@@ -452,6 +461,8 @@ function onKey(ev) {
 
 function init() {
   readParams();
+  $("introImg").innerHTML = imgHtml(INTRO_IMG);
+  document.addEventListener("error", onImgError, true);   // 삽화 파일이 없으면 자리를 지운다
   $("loginForm").addEventListener("submit", onLoginSubmit);
   document.addEventListener("click", onClick);
   document.addEventListener("input", onInput);

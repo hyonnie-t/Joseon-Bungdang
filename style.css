@@ -39,7 +39,6 @@ body {
 .top-inner { max-width: 860px; margin: 0 auto; padding: 10px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
 .brand h1 { margin: 0; font-family: var(--serif); font-size: 1.15rem; line-height: 1.3; }
-.brand .sub { margin: 0; font-size: 0.8125rem; color: #c9c1b0; }
 .seal { flex: none; width: 40px; height: 40px; border-radius: 50%; background: var(--seal); color: #fff; display: grid; place-items: center; font-family: var(--serif); font-size: 1.3rem; }
 .progress { max-width: 860px; margin: 0 auto; padding: 0 16px 10px; }
 .progress-row { display: flex; justify-content: space-between; font-size: 0.875rem; color: #e7dfcc; margin-bottom: 4px; }
@@ -65,12 +64,9 @@ body {
 .center { text-align: center; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
-.eyebrow { margin: 0 0 6px; color: var(--seal); font-weight: 700; font-size: 0.9375rem; }
 .big { font-size: 1.6rem; line-height: 1.4; margin: 0 0 12px; }
 .lead { max-width: 34em; margin: 0 auto 16px; }
 .note { color: var(--muted); font-size: 0.9375rem; margin: 12px 0 20px; }
-.chips { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.chips li { background: #f0ebde; border: 1px solid var(--line); border-radius: 99px; padding: 6px 14px; font-size: 0.9375rem; }
 
 /* 입력 · 버튼 */
 .login { max-width: 360px; margin: 0 auto; text-align: left; display: grid; gap: 12px; }
@@ -108,8 +104,11 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .speaker-role { color: var(--muted); font-size: 0.875rem; margin-left: 6px; }
 .speaker p { margin: 2px 0 0; }
 
-.toast-terms { background: #f3efe4; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 0.9375rem; margin-bottom: 14px; }
-.toast-terms p { margin: 2px 0; }
+/* 삽화: 상상해서 그린 그림. 파일이 없으면 app.js가 figure를 지운다. */
+.scene-img { margin: 0 0 14px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #efe9da; }
+.scene-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
+.scene-img figcaption { font-size: 0.8125rem; color: var(--muted); padding: 4px 10px; text-align: right; }
+#introImg .scene-img { max-width: 520px; margin: 0 auto 14px; }
 
 .term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; border-bottom: 2px dashed var(--seal); padding: 0; cursor: pointer; }
 
@@ -176,7 +175,6 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .status { margin-top: 10px; font-weight: 700; }
 .status.ok { color: var(--jade); }
 .status.bad { color: var(--seal); }
-.paste-guide { background: #f3efe4; border-radius: 10px; padding: 10px 14px; font-size: 0.9375rem; margin-top: 12px; }
 
 /* 모달 · 토스트 */
 .modal { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.55); display: flex; align-items: center; justify-content: center; padding: 16px; }
@@ -194,7 +192,6 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 
 @media (max-width: 480px) {
   .big { font-size: 1.35rem; }
-  .brand .sub { display: none; }
   .stage-title { font-size: 1.2rem; }
   .card { padding: 18px 14px; }
 }
