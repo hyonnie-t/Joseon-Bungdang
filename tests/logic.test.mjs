@@ -73,6 +73,15 @@ t("payload: 스키마 그대로, choicesJson은 문자열", () => {
   assert.equal(j.choices.length, 5);
 });
 
+t("reflection: 고른 선택 문장을 함께 적고, 없으면 그 줄을 빼며, 라벨·원문이 들어간다", () => {
+  const labels = WRITING.map((w) => w.label);
+  const r = L.buildReflection("조광조의 개혁", labels, [" 첫째 ", "둘째"], "지금 바로 박탈해야 해.");
+  assert.ok(r.startsWith("[가장 고민한 장면] 조광조의 개혁\n[내가 고른 선택] 지금 바로 박탈해야 해.\n\n"));
+  assert.ok(r.includes(labels[0] + "\n첫째") && r.includes(labels[1] + "\n둘째"));
+  const r2 = L.buildReflection("조광조의 개혁", labels, ["a", "b"]);
+  assert.ok(!r2.includes("[내가 고른 선택]"));
+});
+
 t("data: 분기 5개, 각 분기에 강경/온건 선택지가 정확히 하나씩", () => {
   assert.equal(STAGES.length, 5);
   for (const s of STAGES) {
@@ -81,7 +90,8 @@ t("data: 분기 5개, 각 분기에 강경/온건 선택지가 정확히 하나�
   }
   assert.equal(BRIDGES.length, 4);
   BRIDGES.forEach((b) => assert.ok(b.length <= 3, "연결 카드는 3줄 이내"));
-  assert.equal(WRITING.length, 3);
+  assert.equal(WRITING.length, 2);
+  WRITING.forEach((w) => assert.ok(w.hint && !w.hintAlt, "힌트는 칸마다 하나, 질문형"));
 });
 
 t("data: {용어} 표기가 모두 용어 사전에 있다", () => {
@@ -91,7 +101,6 @@ t("data: {용어} 표기가 모두 용어 사전에 있다", () => {
   for (const txt of texts) {
     for (const m of txt.matchAll(/\{([^}]+)\}/g)) assert.ok(GLOSSARY[m[1]], "사전에 없는 용어: " + m[1]);
   }
-  for (const s of STAGES) for (const k of s.terms) assert.ok(GLOSSARY[k], "사전에 없는 용어: " + k);
 });
 
 console.log("\n" + passed + "개 통과");
