@@ -6,9 +6,9 @@ const CONFIG = {
   // history26_backend Apps Script 웹앱 (새 배포 금지 — 배포 관리 > 수정 > 새 버전만)
   SHEET_WEBAPP_URL: "https://script.google.com/macros/s/AKfycbyXSjCfWY_HiZFqW_OBR-FQDoIfF1z_STqyKWUI31MacHeY3u7hbirFSFDvW-5yuUHaJQ/exec",
 
-  // 서술 칸마다 최소 글자 수(공백 제외). 수행평가 3점 기준(사실 활용 + 당시 사회 고려)에서
+  // 서술 칸마다 최소 글자 수(공백 제외). 한두 문장이면 넘도록 20자로 낮췄다(v1.3).
   // '분량 부족 = 1점'이라 최소선을 둔다. 바꾸려면 여기만 고친다.
-  MIN_CHARS: 40,
+  MIN_CHARS: 20,
 
   // ?preview=1일 때 sid/name이 없으면 채울 값
   PREVIEW_SID: "30500",

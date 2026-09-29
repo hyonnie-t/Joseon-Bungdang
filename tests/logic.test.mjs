@@ -60,7 +60,7 @@ t("글자 수는 공백을 뺀다 / 학번은 5자리 숫자", () => {
 
 t("payload: 스키마 그대로, choicesJson은 문자열", () => {
   const answers = answersWith([true, true, false, false, false]);
-  const p = L.buildPayload({ sid: " 30512 ", name: "효니", gameName: "G", answers, focusName: "조광조의 개혁", focusStage: 2, reflection: "본문" });
+  const p = L.buildPayload({ sid: " 30512 ", name: "효니", gameName: "G", answers, focusName: "조광조의 개혁", focusStage: 2, dirId: "other", reflection: "본문" });
   assert.deepEqual(Object.keys(p).sort(),
     ["choiceSummary", "choicesJson", "diffSummary", "gameName", "reflection", "studentId", "studentName"]);
   assert.equal(p.studentId, "30512");
@@ -69,12 +69,13 @@ t("payload: 스키마 그대로, choicesJson은 문자열", () => {
   assert.equal(typeof p.choicesJson, "string");
   const j = JSON.parse(p.choicesJson);
   assert.equal(j.focusStage, 2);
+  assert.equal(j.dir, "other");
   assert.deepEqual(j.choices[0], { stage: 1, hard: true, choiceId: "s1-hard" });
   assert.equal(j.choices.length, 5);
 });
 
 t("reflection: 고른 선택 문장을 함께 적고, 없으면 그 줄을 빼며, 라벨·원문이 들어간다", () => {
-  const labels = WRITING.map((w) => w.label);
+  const labels = [WRITING.main.label, WRITING.dirs[0].label];
   const r = L.buildReflection("조광조의 개혁", labels, [" 첫째 ", "둘째"], "지금 바로 박탈해야 해.");
   assert.ok(r.startsWith("[가장 고민한 장면] 조광조의 개혁\n[내가 고른 선택] 지금 바로 박탈해야 해.\n\n"));
   assert.ok(r.includes(labels[0] + "\n첫째") && r.includes(labels[1] + "\n둘째"));
@@ -90,8 +91,12 @@ t("data: 분기 5개, 각 분기에 강경/온건 선택지가 정확히 하나�
   }
   assert.equal(BRIDGES.length, 4);
   BRIDGES.forEach((b) => assert.ok(b.length <= 3, "연결 카드는 3줄 이내"));
-  assert.equal(WRITING.length, 2);
-  WRITING.forEach((w) => assert.ok(w.hint && !w.hintAlt, "힌트는 칸마다 하나, 질문형"));
+  assert.equal(WRITING.dirs.length, 3);
+  for (const w of [WRITING.main, ...WRITING.dirs]) {
+    assert.ok(w.steps.length >= 2 && w.steps.every((q) => q.trim().endsWith("?")), "안내는 질문형 단계만: " + w.label);
+    assert.ok(w.placeholder && w.label);
+  }
+  assert.deepEqual(WRITING.dirs.map((d) => d.id), ["other", "fact", "whatif"]);
 });
 
 t("data: {용어} 표기가 모두 용어 사전에 있다", () => {

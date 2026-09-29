@@ -200,3 +200,10 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .fact { margin-top: 10px; }
 .fact summary { font-weight: 700; cursor: pointer; min-height: var(--tap); display: flex; align-items: center; }
 .lock-note { text-align: left; color: var(--muted); background: #faf7ef; border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; margin: 14px 0; }
+
+/* 글쓰기 안내: 순서 안내(guide), 생각 사다리(hint-body ol), 이어 쓸 이야기 고르기(dir-q) */
+.guide { margin: 4px 0 6px; color: var(--muted); font-size: 0.9375rem; }
+.hint-body p { margin: 0 0 4px; }
+.hint-body ol { margin: 4px 0; padding-left: 1.3em; }
+.hint-body li { margin: 2px 0; }
+.dir-q { font-weight: 700; margin: 14px 0 0; text-align: left; }
