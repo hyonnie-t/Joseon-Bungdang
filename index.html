@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>조선 붕당 분화 시뮬레이션</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <div class="brand">
+        <span class="seal" aria-hidden="true">儒</span>
+        <div>
+          <h1>나라면 어떻게 할까?</h1>
+          <p class="sub">고려 말 사대부에서 붕당까지 · 다섯 번의 갈림길</p>
+        </div>
+      </div>
+      <button type="button" class="btn ghost" id="glossaryBtn">📖 용어 사전</button>
+    </div>
+    <div class="progress" id="progress" hidden>
+      <div class="progress-row">
+        <span id="progressName"></span>
+        <span id="progressCount"></span>
+      </div>
+      <div class="bar"><div class="bar-fill" id="progressFill"></div></div>
+    </div>
+  </header>
+
+  <div class="preview-banner" id="previewBanner" hidden>미리보기 모드야. 여기서 하는 활동은 시트에 저장되지 않아.</div>
+
+  <main class="wrap">
+    <!-- 0. 시작 -->
+    <section id="screenIntro" class="card center">
+      <p class="eyebrow">2026 2학기 · 3학년 역사</p>
+      <h2 class="serif big">“나라를 위한 최선의 길은 무엇인가?”</h2>
+      <p class="lead">
+        고려 말부터 붕당이 나뉘기까지, 다섯 번의 갈림길에서 “나라면?”을 골라 봐.
+        <strong>매 장면마다 다른 자리에 서.</strong> 앞에서 한 선택은 다음 장면으로 이어지지 않아.
+      </p>
+      <ul class="chips">
+        <li>⚖️ 다섯 번의 갈림길</li>
+        <li>🔥 강경 ↔ 온건</li>
+        <li>💡 용어 도움말</li>
+        <li>✍️ 선택 장면 글쓰기</li>
+      </ul>
+      <p class="note">장면 속 대사는 실제 대화 기록이 아니라, 배경 설명을 대화 형태로 바꾼 창작이야.</p>
+
+      <form class="login" id="loginForm" autocomplete="off">
+        <label>학번 <span class="hint-inline">5자리 (예: 30512)</span>
+          <input id="sidInput" inputmode="numeric" maxlength="5" placeholder="학번 5자리">
+        </label>
+        <label>이름
+          <input id="nameInput" maxlength="20" placeholder="이름">
+        </label>
+        <p class="error" id="loginError" role="alert" hidden></p>
+        <button type="submit" class="btn primary big-btn">선비의 길 걸어가기</button>
+      </form>
+    </section>
+
+    <!-- 1. 장면 -->
+    <section id="screenSim" hidden>
+      <div id="bridgeSlot"></div>
+      <div class="card" id="stageCard"></div>
+    </section>
+
+    <!-- 2. 결과 -->
+    <section id="screenSummary" class="card" hidden></section>
+
+    <!-- 3. 글쓰기 -->
+    <section id="screenWriting" class="card" hidden></section>
+  </main>
+
+  <!-- 용어 사전 -->
+  <div class="modal" id="glossaryModal" hidden role="dialog" aria-modal="true" aria-labelledby="glossaryTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="glossaryTitle">📖 용어 사전</h3>
+        <button type="button" class="btn ghost small" data-close="glossaryModal">닫기</button>
+      </div>
+      <div class="modal-body" id="glossaryBody"></div>
+    </div>
+  </div>
+
+  <!-- 자료 돋보기 -->
+  <div class="modal" id="magnifierModal" hidden role="dialog" aria-modal="true" aria-labelledby="magTitle">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="magTitle">🔍 자료 돋보기</h3>
+        <button type="button" class="btn ghost small" data-close="magnifierModal">닫기</button>
+      </div>
+      <div class="modal-body" id="magnifierBody"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- 로딩 순서: 설정 → 콘텐츠 → 순수 로직 → 화면. init()은 app.js 맨 마지막에서 호출한다. -->
+  <script src="config.js"></script>
+  <script src="data.js"></script>
+  <script src="logic.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
