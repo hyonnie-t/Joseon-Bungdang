@@ -15,9 +15,10 @@ const state = {
   orders: [],           // 분기별 선택지 표시 순서
   answers: [],          // 고른 결과 기록
   focusStage: null,     // 글쓰기에서 고른 분기 번호(1~5)
-  texts: WRITING.map(function () { return ""; }),
-  hintOpen: WRITING.map(function () { return false; }),
-  rebutOpen: false,     // ①을 다 쓰면 열리는 ②(고르지 않은 쪽) 영역
+  texts: ["", ""],      // ① 내 선택과 이유 / ② 이어 쓰기
+  hintOpen: [false, false],
+  unlocked: false,      // ①을 최소 글자만큼 쓰면 true → 이어 쓸 방향 고르기가 열린다
+  dir: null,            // ② 방향(WRITING.dirs의 인덱스), 아직 안 골랐으면 null
   saving: false,
   saved: false
 };
@@ -51,11 +52,11 @@ function onImgError(ev) {
   }
 }
 
-function show(id) {
+function show(id, noScroll) {
   ["screenIntro", "screenSim", "screenSummary", "screenWriting"].forEach(function (s) {
     $(s).hidden = (s !== id);
   });
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  if (!noScroll) window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function toast(msg) {
@@ -108,9 +109,7 @@ function resetRun() {
   state.phase = "choose";
   state.answers = [];
   state.focusStage = null;
-  state.texts = WRITING.map(function () { return ""; });
-  state.hintOpen = WRITING.map(function () { return false; });
-  state.rebutOpen = false;
+  resetWriting();
   state.saving = false;
   state.saved = false;
   state.orders = L.displayOrders(STAGES.length);
@@ -270,14 +269,25 @@ function otherChoice() {
   return st.choices.filter(function (c) { return !mine || c.id !== mine.choiceId; })[0] || null;
 }
 
-// 네가 한 선택 + 그때 실제로는(접이식, 글의 근거로 쓸 수 있는 사실)
+function resetWriting() {
+  state.texts = ["", ""];
+  state.hintOpen = [false, false];
+  state.unlocked = false;
+  state.dir = null;
+  state.saved = false;
+}
+
+function currentDir() { return state.dir === null ? null : WRITING.dirs[state.dir]; }
+
+// 네가 한 선택 + 그때 실제로는(접이식. '실제 역사와 비교'를 고르면 펼쳐진다)
 function myPickHtml() {
   const st = STAGES[state.focusStage - 1];
   const mine = focusAnswer();
   const c = chosenChoice();
+  const d = currentDir();
   return '<div class="box"><h4>' + esc(st.name) + " · 네가 한 선택</h4>" +
     '<div class="side mine"><div class="s-stand">' + esc(c.stand) + "</div><div>" + esc(c.text) + "</div></div>" +
-    '<details class="fact"><summary>📌 그때 실제로는? (글의 근거로 써도 돼)</summary>' +
+    '<details class="fact"' + (d && d.id === "fact" ? " open" : "") + '><summary>📌 그때 실제로는? (글의 근거로 써도 돼)</summary>' +
     "<p>" + withTerms(st.result) + "</p>" +
     (st.resultNote ? '<p class="res-note">' + esc(st.resultNote) + "</p>" : "") +
     (mine && !mine.hard && st.softExtra ? '<div class="soft-note">' + esc(st.softExtra) + "</div>" : "") +
@@ -292,16 +302,33 @@ function otherSideHtml() {
     '<p class="res-note">이쪽을 고른 사람이라면 이런 점을 내세울 수 있어. 선택지에 적혀 있던 내용이고, 실제 인물이 한 말은 아니야.</p></div>';
 }
 
+// 생각 사다리: 답이 아니라 질문만. 학생이 이미 본 선택지의 얻는 것/감수할 것만 다시 상기시킨다.
+function hintHtml(i) {
+  const d = currentDir();
+  const steps = i === 0 ? WRITING.main.steps : d.steps;
+  let remind = "";
+  if (i === 0) {
+    const c = chosenChoice();
+    if (c) remind = '<p class="res-note">네가 고른 선택은 이런 거였어 · ' + esc(c.sub) + "</p>";
+  } else if (d.id === "whatif") {
+    const o = otherChoice();
+    if (o) remind = '<p class="res-note">네가 안 고른 선택은 이런 거였어 · ' + esc(o.sub) + "</p>";
+  }
+  return "<p>이 질문에 하나씩 답하면서 써 봐. 다 쓰지 않아도 돼.</p><ol>" +
+    steps.map(function (q) { return "<li>" + esc(q) + "</li>"; }).join("") + "</ol>" + remind;
+}
+
 function writeItemHtml(i) {
-  const w = WRITING[i];
+  const w = i === 0 ? WRITING.main : currentDir();
   return '<div class="write-item"><span class="field-label">' + esc(w.label) + "</span>" +
+    (i === 0 ? '<p class="guide">' + esc(WRITING.main.intro) + "</p>" : "") +
     '<button type="button" class="hint-toggle" data-hint="' + i + '" aria-expanded="' + state.hintOpen[i] + '">💡 막막하면 힌트 보기</button>' +
-    '<div class="hint-body" id="hint' + i + '"' + (state.hintOpen[i] ? "" : " hidden") + ">" + esc(w.hint) + "</div>" +
+    '<div class="hint-body" id="hint' + i + '"' + (state.hintOpen[i] ? "" : " hidden") + ">" + hintHtml(i) + "</div>" +
     '<textarea id="text' + i + '" data-text="' + i + '" placeholder="' + esc(w.placeholder) + '">' + esc(state.texts[i]) + "</textarea>" +
     '<div class="counter" id="count' + i + '"></div></div>';
 }
 
-function renderWriting() {
+function renderWriting(noScroll) {
   setProgress(false);
   const chips = state.answers.map(function (a) {
     return '<button type="button" class="pick" data-pick="' + a.stage + '" aria-pressed="' + (state.focusStage === a.stage) + '">' +
@@ -310,10 +337,16 @@ function renderWriting() {
 
   let body = "";
   if (state.focusStage) {
-    if (L.charCount(state.texts[0]) >= CONFIG.MIN_CHARS) state.rebutOpen = true;
+    if (L.charCount(state.texts[0]) >= CONFIG.MIN_CHARS) state.unlocked = true;
+    const dirChips = WRITING.dirs.map(function (d, i) {
+      return '<button type="button" class="pick" data-dir="' + i + '" aria-pressed="' + (state.dir === i) + '">' + esc(d.chip) + "</button>";
+    }).join("");
+    const extra = state.dir === null ? "" :
+      (currentDir().id === "other" ? otherSideHtml() : "") + writeItemHtml(1);
     body = myPickHtml() + writeItemHtml(0) +
-      '<p class="lock-note" id="lockNote"' + (state.rebutOpen ? " hidden" : "") + ">① 을 다 쓰면 고르지 않은 쪽 이야기가 열려.</p>" +
-      '<div id="rebutArea"' + (state.rebutOpen ? "" : " hidden") + ">" + otherSideHtml() + writeItemHtml(1) + "</div>" +
+      '<p class="lock-note" id="lockNote"' + (state.unlocked ? " hidden" : "") + ">①에 이유를 조금만 써 주면, 이어 쓸 이야기를 고를 수 있어.</p>" +
+      '<div id="dirArea"' + (state.unlocked ? "" : " hidden") + '><p class="dir-q">' + esc(WRITING.dirsTitle) + '</p>' +
+      '<div class="pick-chips">' + dirChips + '</div><div id="extraArea">' + extra + "</div></div>" +
       '<div class="actions"><button type="button" class="btn dark" id="copyBtn">📋 전체 제출문 복사하기</button>' +
       '<button type="button" class="btn primary" id="saveBtn">💾 기록 저장하기</button>' +
       '<button type="button" class="btn" id="restartBtn">처음부터 다시 하기</button></div>' +
@@ -323,8 +356,8 @@ function renderWriting() {
   $("screenWriting").innerHTML =
     '<h2 class="serif" style="margin:0 0 4px">가장 고민한 장면을 하나 골라 줘</h2>' +
     '<div class="pick-chips">' + chips + "</div>" + body;
-  show("screenWriting");
-  if (state.focusStage) { for (let i = 0; i < WRITING.length; i++) updateCounter(i); }
+  show("screenWriting", noScroll);
+  if (state.focusStage) { for (let i = 0; i < 2; i++) updateCounter(i); }
 }
 
 function onPick(n) {
@@ -332,30 +365,38 @@ function onPick(n) {
   const wrote = state.texts.some(function (t) { return t.trim().length > 0; });
   if (state.focusStage && wrote && !window.confirm("다른 장면을 고르면 쓴 글이 사라져. 계속할까?")) return;
   state.focusStage = n;
-  state.texts = WRITING.map(function () { return ""; });
-  state.hintOpen = WRITING.map(function () { return false; });
-  state.rebutOpen = false;
-  state.saved = false;
+  resetWriting();
   renderWriting();
 }
 
-// ①을 최소 글자 수만큼 쓰면 ②를 연다(다시 지워도 닫지 않는다).
+function onDir(i) {
+  if (state.dir === i) return;
+  if (state.dir !== null && state.texts[1].trim() && !window.confirm("이어 쓸 이야기를 바꾸면 ②에 쓴 글이 사라져. 계속할까?")) return;
+  state.dir = i;
+  state.texts[1] = "";
+  state.hintOpen[1] = false;
+  state.saved = false;
+  renderWriting(true);
+}
+
+// ①을 최소 글자 수만큼 쓰면 이어 쓸 방향 고르기를 연다(다시 지워도 닫지 않는다).
 function maybeUnlock() {
-  if (state.rebutOpen || L.charCount(state.texts[0]) < CONFIG.MIN_CHARS) return;
-  state.rebutOpen = true;
-  const area = $("rebutArea");
+  if (state.unlocked || L.charCount(state.texts[0]) < CONFIG.MIN_CHARS) return;
+  state.unlocked = true;
+  const area = $("dirArea");
   const note = $("lockNote");
   if (area) area.hidden = false;
   if (note) note.hidden = true;
-  toast("고르지 않은 쪽 이야기가 열렸어. 아래로 내려가 봐.");
+  toast("좋아! 이어 쓸 이야기를 고를 수 있어. 아래로 내려가 봐.");
 }
 
 function updateCounter(i) {
   const c = L.charCount(state.texts[i]);
   const el = $("count" + i);
   if (!el) return;
-  el.textContent = c + " / " + CONFIG.MIN_CHARS + "자 이상";
-  el.className = "counter" + (c >= CONFIG.MIN_CHARS ? " ok" : "");
+  const ok = c >= CONFIG.MIN_CHARS;
+  el.textContent = ok ? "좋아, 충분해! (" + c + "자)" : c + " / " + CONFIG.MIN_CHARS + "자 · 한두 문장이면 돼";
+  el.className = "counter" + (ok ? " ok" : "");
 }
 
 function setStatus(msg, kind) {
@@ -365,25 +406,29 @@ function setStatus(msg, kind) {
   el.className = "status" + (kind ? " " + kind : "");
 }
 
-function firstShortBox() {
-  for (let i = 0; i < WRITING.length; i++) {
-    if (L.charCount(state.texts[i]) < CONFIG.MIN_CHARS) return i;
-  }
-  return -1;
-}
-
 function requireReady() {
-  const short = firstShortBox();
-  if (short === -1) return true;
-  setStatus("칸마다 " + CONFIG.MIN_CHARS + "자 이상 써야 해. (" + (short + 1) + "번 칸이 아직 짧아)", "bad");
-  const ta = $("text" + short);
-  if (ta) ta.focus();
-  return false;
+  const min = CONFIG.MIN_CHARS;
+  if (L.charCount(state.texts[0]) < min) {
+    setStatus("①에 이유를 한두 문장만 써 줘. (" + L.charCount(state.texts[0]) + " / " + min + "자)", "bad");
+    const ta = $("text0"); if (ta) ta.focus();
+    return false;
+  }
+  if (state.dir === null) {
+    setStatus("이어 쓸 이야기를 하나 골라 줘.", "bad");
+    return false;
+  }
+  if (L.charCount(state.texts[1]) < min) {
+    setStatus("②도 한두 문장만 써 줘. (" + L.charCount(state.texts[1]) + " / " + min + "자)", "bad");
+    const ta = $("text1"); if (ta) ta.focus();
+    return false;
+  }
+  return true;
 }
 
 function currentReflection() {
   const mine = focusAnswer();
-  return L.buildReflection(mine ? mine.stageName : "", WRITING.map(function (w) { return w.label; }), state.texts, mine ? mine.choiceText : "");
+  const d = currentDir();
+  return L.buildReflection(mine ? mine.stageName : "", [WRITING.main.label, d ? d.label : ""], state.texts, mine ? mine.choiceText : "");
 }
 
 function copyText(text) {
@@ -424,7 +469,7 @@ async function onSave() {
   const mine = focusAnswer();
   const payload = L.buildPayload({
     sid: state.sid, name: state.name, gameName: CONFIG.GAME_NAME,
-    answers: state.answers, focusName: mine.stageName, focusStage: state.focusStage,
+    answers: state.answers, focusName: mine.stageName, focusStage: state.focusStage, dirId: currentDir().id,
     reflection: currentReflection()
   });
   const btn = $("saveBtn");
@@ -476,6 +521,7 @@ function onClick(ev) {
   if (t.dataset.close) return closeModal(t.dataset.close);
   if (t.dataset.choice !== undefined) return pickChoice(Number(t.dataset.choice));
   if (t.dataset.pick) return onPick(Number(t.dataset.pick));
+  if (t.dataset.dir !== undefined) return onDir(Number(t.dataset.dir));
   if (t.dataset.hint !== undefined) {
     const i = Number(t.dataset.hint);
     state.hintOpen[i] = !state.hintOpen[i];

@@ -86,7 +86,8 @@
       reflection: o.reflection,
       choicesJson: JSON.stringify({
         choices: o.answers.map(function (a) { return { stage: a.stage, hard: a.hard, choiceId: a.choiceId }; }),
-        focusStage: o.focusStage
+        focusStage: o.focusStage,
+        dir: o.dirId || ""
       })
     };
   }
