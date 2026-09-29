@@ -153,7 +153,7 @@ function renderStage() {
     afterHtml = '<div class="after" id="afterCard"><h4>그때 실제로는?</h4>' +
       "<p>" + withTerms(st.result) + "</p>" +
       (st.resultNote ? '<p class="res-note">' + esc(st.resultNote) + "</p>" : "") +
-      '<div class="stand">네가 선 자리 · ' + esc(chosen.stand) + "</div>" +
+      '<div class="stand">네가 고른 입장 · ' + esc(chosen.stand) + "</div>" +
       (!chosen.hard && st.softExtra ? '<div class="soft-note">' + esc(st.softExtra) + "</div>" : "") +
       '<div class="next-row"><button type="button" class="btn primary" id="nextBtn">' +
       (state.idx < STAGES.length - 1 ? "다음 장면 →" : "결과 보기 →") + "</button></div></div>";
@@ -163,7 +163,7 @@ function renderStage() {
     '<div class="stage-head"><span class="badge">' + st.n + "단계</span><span class=\"year\">" + esc(st.year) + "</span></div>" +
     imgHtml(st.img) +
     '<h3 class="stage-title">' + esc(st.title) + "</h3>" +
-    '<p class="role">🎭 네 자리 · ' + esc(st.role) + "</p>" +
+    '<p class="role">🎭 네 역할 · ' + esc(st.role) + "</p>" +
     '<div class="speaker ' + st.speaker.cls + '"><div class="avatar" aria-hidden="true">' + esc(st.speaker.avatar) + "</div>" +
     '<div><span class="speaker-name">' + esc(st.speaker.name) + '</span><span class="speaker-role">' + esc(st.speaker.role) + "</span>" +
     "<p>" + withTerms(st.scene) + "</p></div></div>" +
@@ -236,7 +236,7 @@ function renderSummary() {
 
   const log = state.answers.map(function (a) {
     return '<div class="log-item"><span class="l-stage">' + a.stage + "번 · " + esc(a.stageName) + "</span><br>" +
-      esc(a.choiceText) + '<br><span class="l-stand">네가 선 자리 · ' + esc(a.stand) + "</span></div>";
+      esc(a.choiceText) + '<br><span class="l-stand">네가 고른 입장 · ' + esc(a.stand) + "</span></div>";
   }).join("");
 
   $("screenSummary").innerHTML =
