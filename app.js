@@ -40,8 +40,7 @@ function withTerms(text) {
 // 삽화 자리. 파일이 없으면 error 리스너(init)가 이 자리를 지운다.
 function imgHtml(img) {
   if (!img || !img.src) return "";
-  return '<figure class="scene-img"><img src="' + esc(img.src) + '" alt="' + esc(img.alt) + '" loading="lazy">' +
-    "<figcaption>상상해서 그린 그림이야. 실제 기록이 아니야.</figcaption></figure>";
+  return '<figure class="scene-img"><img src="' + esc(img.src) + '" alt="' + esc(img.alt) + '" loading="lazy"></figure>';
 }
 
 function onImgError(ev) {
@@ -171,10 +170,13 @@ function renderStage() {
     afterHtml +
     '<div class="tools"><button type="button" class="link-btn" id="magBtn">🔍 자료 돋보기: 당시 맥락 더 보기</button></div>';
 
-  const card = $("stageCard");
-  card.style.animation = "none";
-  void card.offsetWidth;
-  card.style.animation = "";
+  // 새 장면이 열릴 때만 페이드인. 선택 직후(결과 카드가 붙는 다시 그리기)에는 깜빡이지 않게 한다.
+  if (state.phase === "choose") {
+    const card = $("stageCard");
+    card.style.animation = "none";
+    void card.offsetWidth;
+    card.style.animation = "";
+  }
 }
 
 function pickChoice(dataIdx) {

@@ -104,13 +104,12 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .speaker-role { color: var(--muted); font-size: 0.875rem; margin-left: 6px; }
 .speaker p { margin: 2px 0 0; }
 
-/* 삽화: 상상해서 그린 그림. 파일이 없으면 app.js가 figure를 지운다. */
+/* 삽화(창작 그림). 파일이 없으면 app.js가 figure를 지운다. 창작 안내는 시작 화면에 한 번만 둔다. */
 .scene-img { margin: 0 0 14px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line); background: #efe9da; }
 .scene-img img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; }
-.scene-img figcaption { font-size: 0.8125rem; color: var(--muted); padding: 4px 10px; text-align: right; }
 #introImg .scene-img { max-width: 520px; margin: 0 auto 14px; }
 
-.term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; border-bottom: 2px dashed var(--seal); padding: 0; cursor: pointer; }
+.term { font: inherit; font-weight: 700; color: var(--seal); background: none; border: 0; text-decoration: underline dashed var(--seal); text-decoration-thickness: 2px; text-underline-offset: 4px; padding: 9px 2px; margin: -9px 0; cursor: pointer; }  /* 밑줄은 글자에 붙이고, 본문 줄 높이는 그대로 둔 채 터치 영역만 44px 이상으로 */
 
 .choices { display: grid; gap: 12px; margin-bottom: 14px; }
 .choice {
@@ -207,3 +206,7 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .hint-body ol { margin: 4px 0; padding-left: 1.3em; }
 .hint-body li { margin: 2px 0; }
 .dir-q { font-weight: 700; margin: 14px 0 0; text-align: left; }
+
+/* 헤더: 좁은 화면에서 용어 사전 버튼이 두 줄로 꺾이지 않게 */
+#glossaryBtn { white-space: nowrap; flex: none; }
+@media (max-width: 480px) { .brand h1 { font-size: 1.05rem; } #glossaryBtn { padding: 8px 12px; } }

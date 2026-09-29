@@ -2,6 +2,7 @@
 // 1) 학생 화면 문자열에 검증 라벨 0건  2) 화면 문자열에 교과서 쪽수 0건  3) 시트 URL 원본 일치
 // 4) TODO/자동완성/효과음/CDN 0건  5) 규칙 위반 구조(init 위치) 확인
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -52,8 +53,14 @@ if (!/get\("sid"\)/.test(appSrc) || !/get\("name"\)/.test(appSrc)) fail("app.js:
 if (!/get\("preview"\) === "1"/.test(appSrc)) fail("app.js: ?preview=1 없음");
 if (!/막막하면 힌트 보기/.test(appSrc)) fail("app.js: 힌트 토글 라벨 없음");
 
+// 브라우저에서 실행되는 스크립트 문법 검사(따옴표 하나만 깨져도 화면 전체가 멈춘다)
+for (const f of ["config.js", "data.js", "logic.js", "app.js"]) {
+  const r = spawnSync(process.execPath, ["--check", join(root, f)], { encoding: "utf8" });
+  if (r.status !== 0) fail(`${f}: 문법 오류\n${r.stderr.split("\n").slice(0, 4).join("\n")}`);
+}
+
 if (problems.length) {
   console.error("verify 실패:\n- " + problems.join("\n- "));
   process.exit(1);
 }
-console.log("verify 통과: 금지 라벨·쪽수·CDN·TODO 0건, 시트 URL 원본 일치, init() 마지막 위치");
+console.log("verify 통과: 금지 라벨·쪽수·CDN·TODO 0건, 시트 URL 원본 일치, init() 마지막 위치, 스크립트 문법 이상 없음");
