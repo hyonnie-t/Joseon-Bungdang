@@ -152,7 +152,9 @@ function renderStage() {
     afterHtml = '<div class="after" id="afterCard"><h4>그때 실제로는?</h4>' +
       "<p>" + withTerms(st.result) + "</p>" +
       (st.resultNote ? '<p class="res-note">' + esc(st.resultNote) + "</p>" : "") +
+      '<div class="my-role"><b>🎭 ' + esc(st.role) + "인 너의 선택</b><br>" + esc(chosen.text) + "</div>" +
       '<div class="stand">네가 고른 입장 · ' + esc(chosen.stand) + "</div>" +
+      '<p class="say-it">🗣 그 역할이 되어, 짝에게 왜 그렇게 골랐는지 한 문장으로 말해 봐.</p>' +
       (!chosen.hard && st.softExtra ? '<div class="soft-note">' + esc(st.softExtra) + "</div>" : "") +
       '<div class="next-row"><button type="button" class="btn primary" id="nextBtn">' +
       (state.idx < STAGES.length - 1 ? "다음 장면 →" : "결과 보기 →") + "</button></div></div>";
@@ -162,10 +164,14 @@ function renderStage() {
     '<div class="stage-head"><span class="badge">' + st.n + "단계</span><span class=\"year\">" + esc(st.year) + "</span></div>" +
     imgHtml(st.img) +
     '<h3 class="stage-title">' + esc(st.title) + "</h3>" +
-    '<p class="role">🎭 네 역할 · ' + esc(st.role) + "</p>" +
+    '<div class="role-card"><span class="role-label">🎭 지금 너는</span>' +
+    '<strong class="role-name">' + esc(st.role) + "</strong>" +
+    '<p class="role-task">' + esc(st.roleTask) + "</p></div>" +
     '<div class="speaker ' + st.speaker.cls + '"><div class="avatar" aria-hidden="true">' + esc(st.speaker.avatar) + "</div>" +
     '<div><span class="speaker-name">' + esc(st.speaker.name) + '</span><span class="speaker-role">' + esc(st.speaker.role) + "</span>" +
     "<p>" + withTerms(st.scene) + "</p></div></div>" +
+    '<p class="term-hint">밑줄 친 낱말을 누르면 뜻이 나와.</p>' +
+    '<p class="choose-q">' + esc(st.roleAsk) + "</p>" +
     '<div class="choices">' + choicesHtml + "</div>" +
     afterHtml +
     '<div class="tools"><button type="button" class="link-btn" id="magBtn">🔍 자료 돋보기: 당시 맥락 더 보기</button></div>';
@@ -244,7 +250,7 @@ function renderSummary() {
   $("screenSummary").innerHTML =
     '<div class="center"><span class="badge-soft">나의 성향 결과</span>' +
     '<h2 class="type-title">' + esc(t.name) + "</h2><p>" + esc(t.desc) + "</p></div>" +
-    '<div class="gauge"><div class="gauge-row"><span>강경 ' + n + '</span><span>온건 ' + soft + "</span></div>" +
+    '<div class="gauge"><div class="gauge-row"><span>강하게 나간 선택 ' + n + '</span><span>부드럽게 나간 선택 ' + soft + "</span></div>" +
     '<div class="gauge-bar"><div class="gauge-hard" style="width:' + (n / STAGES.length * 100) + '%"></div>' +
     '<div class="gauge-soft" style="width:' + (soft / STAGES.length * 100) + '%"></div></div></div>' +
     '<h4 class="serif">내가 걸어온 다섯 번의 선택</h4><div class="log">' + log + "</div>" +

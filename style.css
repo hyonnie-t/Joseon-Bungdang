@@ -94,7 +94,14 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .badge { background: var(--seal); color: #fff; font-weight: 700; font-size: 0.9375rem; padding: 3px 12px; border-radius: 99px; }
 .year { color: var(--muted); font-weight: 700; font-size: 0.9375rem; }
 .stage-title { font-family: var(--serif); font-size: 1.4rem; line-height: 1.4; margin: 0 0 6px; }
-.role { margin: 0 0 14px; font-weight: 700; color: var(--seal); }
+.role-card { margin: 0 0 14px; padding: 14px 16px; border-radius: 12px; background: var(--seal-bg); border: 2px solid var(--seal); }
+.role-label { display: block; font-size: 0.875rem; font-weight: 700; color: var(--seal); margin-bottom: 2px; }
+.role-name { display: block; font-family: var(--serif); font-size: 1.25rem; line-height: 1.4; }
+.role-task { margin: 6px 0 0; font-size: 1rem; }
+.term-hint { margin: -4px 0 12px; font-size: 0.875rem; color: var(--muted); }
+.choose-q { margin: 0 0 8px; font-family: var(--serif); font-size: 1.125rem; font-weight: 700; color: var(--seal); }
+.my-role { background: var(--seal-bg); border-left: 5px solid var(--seal); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
+.say-it { margin: 8px 0 12px; font-weight: 700; }
 
 .speaker { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 12px; border-left: 5px solid var(--indigo); background: var(--indigo-bg); margin-bottom: 14px; }
 .speaker.speaker-c { border-left-color: var(--jade); background: var(--jade-bg); }
