@@ -100,6 +100,7 @@ function onLoginSubmit(ev) {
   err.hidden = true;
   state.sid = sid;
   state.name = name;
+  FocusGuard.start({ key: CONFIG.GAME_NAME + ":" + sid }); // 작성 중 화면 이탈·붙여넣기 기록 (history26 snippets/focus_guard.js)
   startSimulation();
 }
 
@@ -490,6 +491,7 @@ async function onSave() {
     answers: state.answers, focusName: mine.stageName, focusStage: state.focusStage, dirId: currentDir().id,
     reflection: currentReflection()
   });
+  Object.assign(payload, FocusGuard.payload());
   const btn = $("saveBtn");
   state.saving = true;
   btn.disabled = true;
