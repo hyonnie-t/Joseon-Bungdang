@@ -155,7 +155,6 @@ function renderStage() {
       (st.resultNote ? '<p class="res-note">' + esc(st.resultNote) + "</p>" : "") +
       '<div class="my-role"><b>🎭 ' + esc(st.role) + "인 너의 선택</b><br>" + esc(chosen.text) + "</div>" +
       '<div class="stand">네가 고른 입장 · ' + esc(chosen.stand) + "</div>" +
-      '<p class="say-it">🗣 그 역할이 되어, 짝에게 왜 그렇게 골랐는지 한 문장으로 말해 봐.</p>' +
       (!chosen.hard && st.softExtra ? '<div class="soft-note">' + esc(st.softExtra) + "</div>" : "") +
       '<div class="next-row"><button type="button" class="btn primary" id="nextBtn">' +
       (state.idx < STAGES.length - 1 ? "다음 장면 →" : "결과 보기 →") + "</button></div></div>";

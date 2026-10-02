@@ -101,7 +101,6 @@ textarea { resize: vertical; min-height: 120px; line-height: 1.6; }
 .term-hint { margin: -4px 0 12px; font-size: 0.875rem; color: var(--muted); }
 .choose-q { margin: 0 0 8px; font-family: var(--serif); font-size: 1.125rem; font-weight: 700; color: var(--seal); }
 .my-role { background: var(--seal-bg); border-left: 5px solid var(--seal); border-radius: 8px; padding: 10px 12px; margin: 10px 0; }
-.say-it { margin: 8px 0 12px; font-weight: 700; }
 
 .speaker { display: flex; gap: 12px; align-items: flex-start; padding: 14px; border-radius: 12px; border-left: 5px solid var(--indigo); background: var(--indigo-bg); margin-bottom: 14px; }
 .speaker.speaker-c { border-left-color: var(--jade); background: var(--jade-bg); }
