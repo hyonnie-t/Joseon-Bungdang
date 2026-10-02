@@ -579,6 +579,8 @@ function init() {
   document.addEventListener("input", onInput);
   document.addEventListener("keydown", onKey);
   show("screenIntro");
+  // {용어} 표시가 없는 본문 속 사전 낱말에도 밑줄을 입힌다(glossary.js). 풀이 창·스타일은 이 앱 것을 그대로 쓴다.
+  Glossary.start({ terms: GLOSSARY, tag: "button", sheet: false, style: false, skip: ["#glossaryModal"] });
 }
 
 // ⚠️ 반드시 파일 맨 마지막. 위의 모든 선언이 끝난 뒤에만 실행한다.
