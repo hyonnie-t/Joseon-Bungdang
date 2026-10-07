@@ -101,6 +101,7 @@ function onLoginSubmit(ev) {
   state.sid = sid;
   state.name = name;
   FocusGuard.start({ key: CONFIG.GAME_NAME + ":" + sid }); // 작성 중 화면 이탈·붙여넣기 기록 (history26 snippets/focus_guard.js)
+  if (window.DraftGuard) DraftGuard.start({ key: CONFIG.GAME_NAME, sid: sid }); // 글쓰기 칸 임시저장 (history26 v75)
   startSimulation();
 }
 
@@ -501,6 +502,7 @@ async function onSave() {
     if (!body || body.result === "error") throw new Error((body && body.message) || "저장 실패");
     state.saved = true;
     btn.textContent = "저장 완료 ✓";
+    if (window.DraftGuard) DraftGuard.clear(); // 저장 성공 → 임시저장 삭제
     setStatus("저장했어! Padlet 제출도 잊지 마.", "ok");
   } catch (e) {
     btn.disabled = false;
@@ -514,6 +516,7 @@ async function onSave() {
 function onRestart() {
   const wrote = state.texts.some(function (t) { return t.trim().length > 0; });
   if (wrote && !window.confirm("처음부터 다시 하면 쓴 글이 사라져. 계속할까?")) return;
+  if (window.DraftGuard) DraftGuard.clear(); // 처음부터 다시 → 옛 임시저장도 버린다
   resetRun();
   $("progress").hidden = true;
   show("screenIntro");
